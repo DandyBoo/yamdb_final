@@ -1,45 +1,24 @@
+from api.serializers import (CategorySerializer, CommentSerializer,
+                             GenreSerializer, RegisterDataSerializer,
+                             ReviewSerializer, TitleListSerializer,
+                             TitlePostPatchSerializer, TitleRetrieveSerializer,
+                             TokenAccessSerializer, UserSerializer)
 from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import (filters,
-                            mixins,
-                            viewsets,
-                            status,
-                            serializers
-                            )
+from rest_framework import filters, mixins, serializers, status, viewsets
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
+from reviews.models import Category, Comment, Genre, Review, Title, User
 
 from .filters import TitleFilter
-from .permissions import (IsAdminOrSuperUser,
-                          IsAdminOrSuperUserOrReadOnly,
-                          PermissionReviewComment
-                          )
-
-from api.serializers import (CategorySerializer,
-                             GenreSerializer,
-                             TitleListSerializer,
-                             TitleRetrieveSerializer,
-                             TitlePostPatchSerializer,
-                             UserSerializer,
-                             TokenAccessSerializer,
-                             ReviewSerializer,
-                             CommentSerializer,
-                             RegisterDataSerializer
-                             )
-
-from reviews.models import (Category,
-                            Comment,
-                            Genre,
-                            Review,
-                            Title,
-                            User
-                            )
+from .permissions import (IsAdminOrSuperUser, IsAdminOrSuperUserOrReadOnly,
+                          PermissionReviewComment)
 
 
 # Система подтверждения через e-mail
@@ -167,8 +146,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         title_id = self.kwargs.get("title_id")
-        new_queryset = Review.objects.filter(title=title_id)
-        return new_queryset
+        return Review.objects.filter(title=title_id)
 
     def perform_create(self, serializer):
         title_id = self.kwargs.get("title_id")
@@ -189,8 +167,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         review_id = self.kwargs.get("review_id")
-        new_queryset = Comment.objects.filter(review=review_id)
-        return new_queryset
+        return Comment.objects.filter(review=review_id)
 
     def perform_create(self, serializer):
         review_id = self.kwargs.get("review_id")
